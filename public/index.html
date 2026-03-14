@@ -597,20 +597,20 @@ function toggleOne(eyeEl) {
   } else {
     inp.style.webkitTextSecurity = 'disc';
     inp.dataset.visible = 'false';
-    eyeEl.textContent = '👁';
+    eyeEl.textContent = '👁️';
   }
 }
 
 function toggleAllPasswords() {
   pwdsVisible = !pwdsVisible;
   const btn = document.getElementById('toggle-vis-btn');
-  if(btn){ btn.textContent = pwdsVisible ? '🙈 إخفاء الكل' : '👁 إظهار الكل'; }
+  if(btn){ btn.textContent = pwdsVisible ? '🙈 إخفاء الكل' : ' 👁️إظهار الكل'; }
   document.querySelectorAll('#u-body input[data-uid]').forEach(inp => {
     inp.style.webkitTextSecurity = pwdsVisible ? 'none' : 'disc';
     inp.dataset.visible = pwdsVisible ? 'true' : 'false';
   });
   document.querySelectorAll('#u-body .pwd-eye').forEach(eye => {
-    eye.textContent = pwdsVisible ? '🙈' : '👁';
+    eye.textContent = pwdsVisible ? '🙈' : '👁️';
   });
 }
 
