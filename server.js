@@ -19,6 +19,9 @@ const adminRouter = require('./routes/admin');
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
+// ── Trust Railway's proxy (required for secure cookies over HTTPS) ────────────
+app.set('trust proxy', 1);
+
 // ── Security headers ──────────────────────────────────────────────────────────
 app.use(helmet({
   contentSecurityPolicy: {
@@ -34,8 +37,17 @@ app.use(helmet({
 }));
 
 // ── CORS ──────────────────────────────────────────────────────────────────────
+const allowedOrigins = [
+  'https://outlaw-management-production.up.railway.app',
+  process.env.ALLOWED_ORIGIN,
+  'http://localhost:3000',
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.ALLOWED_ORIGIN || 'http://localhost:3000',
+  origin: (origin, cb) => {
+    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    cb(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type'],
@@ -52,10 +64,10 @@ app.use(session({
   saveUninitialized: false,
   name: 'olrp.sid',
   cookie: {
-    httpOnly: true,                                       // JS cannot read cookie
-    secure: process.env.NODE_ENV === 'production',        // HTTPS only in prod
-    sameSite: 'lax',
-    maxAge: 8 * 60 * 60 * 1000,                          // 8 hours
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    maxAge: 8 * 60 * 60 * 1000,
   },
 }));
 
