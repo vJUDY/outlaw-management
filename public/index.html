@@ -277,7 +277,7 @@ table.u-tbl input[type=text]:focus{border-color:rgba(40,192,215,0.4);}
         <tbody id="u-body"><tr><td colspan="3" style="text-align:center;color:var(--text4);padding:2rem;font-family:'Inter',sans-serif;">جاري التحميل...</td></tr></tbody>
       </table>
     </div>
-    <div style="position:fixed;top:18px;left:170px;display:flex;gap:8px;align-items:center;z-index:600;">
+    <div style="position:fixed;top:18px;right:160px;display:flex;gap:8px;align-items:center;z-index:600;">
       <button class="btn-rand" id="toggle-vis-btn" style="background:rgba(40,192,215,0.08);border-color:rgba(40,192,215,0.25);color:var(--text3);" onclick="toggleAllPasswords()">👁 إظهار الكل</button>
       <button class="btn-rand" onclick="randomizeAll()">🎲 باسورد عشوائي للكل</button>
       <button class="btn-save" style="padding:7px 20px;" onclick="savePasswords()">حفظ كلمات المرور</button>
@@ -520,7 +520,7 @@ function renderAdminTable(users) {
         <td></td>
         <td>
           <div class="pwd-wrap">
-            <input type="password" value="${pwdVal}" data-uid="${name}" placeholder="كلمة المرور">
+            <input type="password" value="${pwdVal}" data-uid="${name}" data-pwd="${pwdVal}" placeholder="كلمة المرور">
             <span class="pwd-eye" onclick="toggleOne(this)" title="إظهار/إخفاء">👁</span>
           </div>
         </td>
@@ -533,11 +533,12 @@ function renderAdminTable(users) {
 
 async function savePasswords() {
   const inputs = [...document.querySelectorAll('#u-body input[data-uid]')];
-  // Only send rows where user typed something (not the placeholder dots)
   const updates = inputs
-    .filter(inp => inp.value && inp.value !== '••••••••')
-    .map(inp => ({ name: inp.dataset.uid, password: inp.value.trim() }))
-    .filter(u => u.password.length >= 4);
+    .map(inp => ({
+      name: inp.dataset.uid,
+      password: (inp.type === 'text' ? inp.value : inp.dataset.pwd || inp.value).trim()
+    }))
+    .filter(u => u.password && u.password.length >= 4);
 
   if (!updates.length) { flash('u-save-msg', '⚠ لا يوجد تغييرات'); return; }
   try {
@@ -589,12 +590,17 @@ async function saveGid() {
 function toggleOne(eyeEl) {
   const inp = eyeEl.previousElementSibling;
   const isHidden = inp.type === 'password';
-  inp.type = isHidden ? 'text' : 'password';
-  // Force browser to re-render the value
-  const val = inp.value;
-  inp.value = '';
-  inp.value = val;
-  eyeEl.textContent = isHidden ? '🙈' : '👁';
+  if (isHidden) {
+    // Show real password from data-pwd
+    inp.type = 'text';
+    inp.value = inp.dataset.pwd || inp.value;
+    eyeEl.textContent = '🙈';
+  } else {
+    // Save any edits back to data-pwd then hide
+    inp.dataset.pwd = inp.value;
+    inp.type = 'password';
+    eyeEl.textContent = '👁';
+  }
 }
 
 function toggleAllPasswords() {
