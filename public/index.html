@@ -111,7 +111,7 @@ header{position:sticky;top:0;z-index:500;height:var(--hdr);display:flex;align-it
 .rpos.me{color:#28c0d7;} .rpos.g1{color:#ffd700;} .rpos.g2{color:#c0c0c0;} .rpos.g3{color:#cd7f32;}
 .rname{flex:1;font-size:13px;color:var(--text2);}
 .rname.me{color:#28c0d7;font-weight:600;}
-.r-rank{font-size:9px;padding:2px 8px;border-radius:20px;margin-right:6px;white-space:nowrap;font-family:'Inter',sans-serif;border:1px solid;}
+.r-rank{font-size:9px;padding:2px 8px;border-radius:20px;margin-right:8px;margin-left:6px;white-space:nowrap;font-family:'Inter',sans-serif;border:1px solid;}
 .rpts{font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--text);}
 .rank-footer{padding:11px 18px;font-size:11px;color:var(--text4);text-align:center;border-top:1px solid rgba(255,255,255,0.04);background:rgba(0,0,0,0.15);font-family:'Inter',sans-serif;}
 
@@ -597,20 +597,20 @@ function toggleOne(eyeEl) {
   } else {
     inp.style.webkitTextSecurity = 'disc';
     inp.dataset.visible = 'false';
-    eyeEl.textContent = '👁️';
+    eyeEl.textContent = '👁';
   }
 }
 
 function toggleAllPasswords() {
   pwdsVisible = !pwdsVisible;
   const btn = document.getElementById('toggle-vis-btn');
-  if(btn){ btn.textContent = pwdsVisible ? '🙈 إخفاء الكل' : ' 👁️إظهار الكل'; }
+  if(btn){ btn.textContent = pwdsVisible ? '🙈 إخفاء الكل' : '👁 إظهار الكل'; }
   document.querySelectorAll('#u-body input[data-uid]').forEach(inp => {
     inp.style.webkitTextSecurity = pwdsVisible ? 'none' : 'disc';
     inp.dataset.visible = pwdsVisible ? 'true' : 'false';
   });
   document.querySelectorAll('#u-body .pwd-eye').forEach(eye => {
-    eye.textContent = pwdsVisible ? '🙈' : '👁️';
+    eye.textContent = pwdsVisible ? '🙈' : '👁';
   });
 }
 
@@ -633,6 +633,6 @@ function flash(id, msg) {
   }
 })();
 </script>
-  <div class="footer">© J2 Studio 2026 - جميع الحقوق محفوظة</div>
+  <div class="footer">© J2 Studio 2025 - جميع الحقوق محفوظة</div>
 </body>
 </html>
