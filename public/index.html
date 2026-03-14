@@ -505,12 +505,18 @@ function updateWeekDisplay() {
 }
 
 function renderRanking() {
-  if (!rankData) return;
-  const mi = rankData.findIndex(x => x.name === curName);
+  if (!rankData || !myData) return;
+  const myRank = myData.rank || '';
+
+  // Filter only same rank
+  const sameRank = rankData.filter(x => x.rank === myRank);
+  const mi = sameRank.findIndex(x => x.name === curName);
   const st = Math.max(0, mi - 2);
-  const sl = rankData.slice(st, Math.min(st + 5, rankData.length));
+  const sl = sameRank.slice(st, Math.min(st + 5, sameRank.length));
+
   const posClass = p => p===1?'g1':p===2?'g2':p===3?'g3':'';
   const rkCls = r => RANK_STYLE[r] || 'rk-default';
+
   document.getElementById('s-rank-list').innerHTML =
     sl.map(({name, rank, total}, i) => {
       const pos = st+i+1, me = name === curName;
@@ -520,7 +526,7 @@ function renderRanking() {
         <span class="rpts">${total}</span>
       </div>`;
     }).join('') +
-    `<div class="rank-footer">ترتيبك: #${mi+1} من ${rankData.length} إداري · مجموعك ${getMyTotal()} نقطة</div>`;
+    `<div class="rank-footer">ترتيبك: #${mi+1} من ${sameRank.length} في رتبة ${myRank} · مجموعك ${getMyTotal()} نقطة</div>`;
 }
 
 /* ── ADMIN ──────────────────────────────────────────── */
@@ -686,6 +692,6 @@ function flash(id, msg) {
   }
 })();
 </script>
-  <div class="footer">© J2 Studio 2026 - جميع الحقوق محفوظة</div>
+  <div class="footer">© J2 Studio 2025 - جميع الحقوق محفوظة</div>
 </body>
 </html>
