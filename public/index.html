@@ -520,7 +520,7 @@ function renderAdminTable(users) {
         <td></td>
         <td>
           <div class="pwd-wrap">
-            <input type="password" value="${pwdVal}" data-uid="${name}" data-pwd="${pwdVal}" placeholder="كلمة المرور">
+            <input type="text" value="${pwdVal}" data-uid="${name}" data-visible="false" style="-webkit-text-security:disc;font-family:monospace;" placeholder="كلمة المرور">
             <span class="pwd-eye" onclick="toggleOne(this)" title="إظهار/إخفاء">👁</span>
           </div>
         </td>
@@ -589,16 +589,14 @@ async function saveGid() {
 /* ── Toggle password visibility ─────────────────────── */
 function toggleOne(eyeEl) {
   const inp = eyeEl.previousElementSibling;
-  const isHidden = inp.type === 'password';
+  const isHidden = inp.dataset.visible === 'false';
   if (isHidden) {
-    // Show real password from data-pwd
-    inp.type = 'text';
-    inp.value = inp.dataset.pwd || inp.value;
+    inp.style.webkitTextSecurity = 'none';
+    inp.dataset.visible = 'true';
     eyeEl.textContent = '🙈';
   } else {
-    // Save any edits back to data-pwd then hide
-    inp.dataset.pwd = inp.value;
-    inp.type = 'password';
+    inp.style.webkitTextSecurity = 'disc';
+    inp.dataset.visible = 'false';
     eyeEl.textContent = '👁';
   }
 }
@@ -608,7 +606,8 @@ function toggleAllPasswords() {
   const btn = document.getElementById('toggle-vis-btn');
   if(btn){ btn.textContent = pwdsVisible ? '🙈 إخفاء الكل' : '👁 إظهار الكل'; }
   document.querySelectorAll('#u-body input[data-uid]').forEach(inp => {
-    inp.type = pwdsVisible ? 'text' : 'password';
+    inp.style.webkitTextSecurity = pwdsVisible ? 'none' : 'disc';
+    inp.dataset.visible = pwdsVisible ? 'true' : 'false';
   });
   document.querySelectorAll('#u-body .pwd-eye').forEach(eye => {
     eye.textContent = pwdsVisible ? '🙈' : '👁';
