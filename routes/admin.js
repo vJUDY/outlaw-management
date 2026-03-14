@@ -27,7 +27,7 @@ router.get('/users', async (req, res) => {
     const sheetData = await sheets.fetchSheetData();
     if (sheetData.staff) await db.syncFromSheet(sheetData.staff);
 
-    const users = db.listUsers();
+    const users = db.listUsers(true); // include passwords for admin view
     res.json({ users });
   } catch (err) {
     console.error('admin/users error:', err.message);
