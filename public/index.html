@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OUTLAW | نظام النقاط</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+:root{
+  --hdr:72px;
+  --bg-base:#14181d;
+  --glass:rgba(28,34,41,0.72);
+  --glass-strong:rgba(36,43,52,0.9);
+  --glass-border:rgba(78,88,102,0.45);
+  --shadow-glass:0 8px 32px rgba(0,0,0,0.35),0 2px 8px rgba(0,0,0,0.25),inset 0 1px 0 rgba(255,255,255,0.03);
+  --shadow-deep:0 16px 48px rgba(0,0,0,0.45),0 4px 16px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.04);
+  --text:#e8edf5;--text2:#c3ccd8;--text3:#8f9bab;--text4:#657181;
+  --accent:#28c0d7;--accent-glow:rgba(40,192,215,0.25);
+  --gold:#f0c060;--danger:#e05060;
+  --sans:'Tajawal',sans-serif;
+}
+body{background:var(--bg-base);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden;font-size:14px;line-height:1.5;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:4px;}
+
+/* ── LOGO ANIMATION ── */
+@property --logo-angle{syntax:'<angle>';initial-value:0deg;inherits:false;}
+@keyframes logoSpin{to{--logo-angle:360deg;}}
+@keyframes logoPulse{0%,100%{box-shadow:0 0 0 0 var(--accent-glow),0 2px 8px rgba(0,0,0,0.22);}50%{box-shadow:0 0 0 5px rgba(40,192,215,0.06),0 2px 8px rgba(0,0,0,0.22);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+@keyframes sp{to{transform:rotate(360deg);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* ── HEADER ── */
+header{position:sticky;top:0;z-index:500;height:var(--hdr);display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:rgba(18,22,27,0.8);backdrop-filter:blur(40px) saturate(140%);border-bottom:1px solid rgba(255,255,255,0.05);box-shadow:0 4px 20px rgba(0,0,0,0.25);}
+.logo{display:flex;align-items:center;gap:12px;}
+.logo-mark{width:36px;height:36px;border-radius:10px;background:rgba(36,43,52,0.95);display:flex;align-items:center;justify-content:center;position:relative;animation:logoPulse 3s ease-in-out infinite;}
+.logo-mark::before{content:'';position:absolute;inset:-1.5px;border-radius:12px;background:conic-gradient(from var(--logo-angle),transparent 60%,#28c0d7 75%,#7ee8f0 82%,#28c0d7 89%,transparent 100%);animation:logoSpin 2.4s linear infinite;z-index:0;}
+.logo-mark::after{content:'';position:absolute;inset:1px;border-radius:9px;background:rgba(36,43,52,0.96);z-index:1;}
+.logo-mark span{font-family:'Inter',sans-serif;font-size:9px;font-weight:700;color:#28c0d7;letter-spacing:.5px;position:relative;z-index:2;}
+.logo-words{display:flex;flex-direction:column;}
+.logo-w1{font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:#28c0d7;letter-spacing:3px;line-height:1;}
+.logo-w2{font-family:'Inter',sans-serif;font-size:7.5px;letter-spacing:2.5px;color:var(--text4);text-transform:uppercase;margin-top:2px;}
+.hdr-actions{display:flex;align-items:center;gap:8px;}
+.hdr-user-name{font-size:13px;font-weight:600;color:var(--text);font-family:'Inter',sans-serif;}
+.hdr-badge{font-family:'Inter',sans-serif;font-size:7px;font-weight:600;border-radius:5px;padding:2px 8px;border:1px solid;text-transform:uppercase;letter-spacing:.5px;}
+.hb-admin{border-color:rgba(240,192,96,0.3);color:var(--gold);background:rgba(240,192,96,0.08);}
+.hdr-btn{font-family:'Inter',sans-serif;font-size:11px;font-weight:500;color:var(--text2);background:rgba(32,38,46,0.88);border:1px solid rgba(255,255,255,0.06);border-radius:9px;padding:7px 16px;cursor:pointer;transition:all .2s;backdrop-filter:blur(10px);display:flex;align-items:center;gap:5px;}
+.hdr-btn:hover{color:#28c0d7;background:rgba(40,192,215,0.1);border-color:rgba(40,192,215,0.3);transform:translateY(-1px);}
+.hdr-btn:disabled{opacity:.5;pointer-events:none;}
+.hdr-btn.danger:hover{color:var(--danger);background:rgba(224,80,96,0.1);border-color:rgba(224,80,96,0.3);}
+
+/* ── LOGIN ── */
+#page-login{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:2rem 1rem;}
+.login-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:20px;padding:2.5rem;width:100%;max-width:380px;backdrop-filter:blur(40px);box-shadow:var(--shadow-deep);animation:fadeUp .4s cubic-bezier(.22,1,.36,1);}
+.login-logo{width:68px;height:68px;border-radius:18px;background:rgba(36,43,52,0.95);border:1px solid rgba(40,192,215,0.25);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;position:relative;animation:logoPulse 3s ease-in-out infinite;}
+.login-logo::before{content:'';position:absolute;inset:-1.5px;border-radius:20px;background:conic-gradient(from var(--logo-angle),transparent 60%,#28c0d7 75%,#7ee8f0 82%,#28c0d7 89%,transparent 100%);animation:logoSpin 2.4s linear infinite;z-index:0;}
+.login-logo::after{content:'';position:absolute;inset:1px;border-radius:17px;background:rgba(36,43,52,0.97);z-index:1;}
+.login-logo-txt{position:relative;z-index:2;font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:#28c0d7;letter-spacing:1px;}
+.login-title{text-align:center;margin-bottom:2rem;}
+.login-title h1{font-family:'Inter',sans-serif;font-size:20px;font-weight:700;color:#28c0d7;letter-spacing:3px;}
+.login-title p{font-size:11px;color:var(--text4);letter-spacing:1.5px;margin-top:4px;}
+.field{margin-bottom:1.1rem;}
+.field label{display:block;font-size:10px;color:var(--text4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;font-family:'Inter',sans-serif;}
+.field input{width:100%;padding:11px 14px;background:rgba(20,24,29,0.8);border:1px solid var(--glass-border);border-radius:10px;color:var(--text);font-family:var(--sans);font-size:14px;outline:none;transition:all .2s;box-shadow:inset 0 2px 4px rgba(0,0,0,0.15);}
+.field input:focus{border-color:rgba(40,192,215,0.4);box-shadow:0 0 0 3px rgba(40,192,215,0.1),inset 0 2px 4px rgba(0,0,0,0.12);}
+.btn-login{width:100%;padding:12px;background:rgba(40,192,215,0.15);border:1px solid rgba(40,192,215,0.35);border-radius:10px;color:#28c0d7;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:4px;letter-spacing:.5px;}
+.btn-login:hover{background:rgba(40,192,215,0.25);border-color:rgba(40,192,215,0.6);box-shadow:0 0 24px rgba(40,192,215,0.2);}
+.btn-login:disabled{opacity:.6;cursor:not-allowed;}
+.err{font-size:12px;color:var(--danger);text-align:center;margin-top:.75rem;min-height:16px;}
+
+/* ── PAGE BODY ── */
+.page-body{padding:28px 32px 70px;max-width:860px;margin:0 auto;}
+
+/* ── WEEK TABS ── */
+.week-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem;}
+.wtab{font-size:11px;padding:6px 14px;background:rgba(28,34,41,0.7);border:1px solid var(--glass-border);border-radius:20px;color:var(--text3);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif;}
+.wtab:hover{border-color:rgba(40,192,215,0.3);color:#28c0d7;}
+.wtab.on{background:rgba(40,192,215,0.12);border-color:rgba(40,192,215,0.35);color:#28c0d7;font-weight:500;}
+
+/* ── KPI ── */
+.kpi-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:1.5rem;}
+.kpi{background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;padding:1.5rem;position:relative;overflow:hidden;backdrop-filter:blur(40px);box-shadow:var(--shadow-glass);transition:all .22s cubic-bezier(.22,1,.36,1);}
+.kpi::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.6;}
+.kpi:hover{background:var(--glass-strong);box-shadow:var(--shadow-deep);transform:translateY(-2px);}
+.kpi-lbl{font-size:10px;color:var(--text4);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;font-family:'Inter',sans-serif;}
+.kpi-val{font-family:'Inter',sans-serif;font-size:36px;font-weight:700;color:var(--text);}
+.kpi-val.accent{color:#28c0d7;}
+
+/* ── SEC LABEL ── */
+.sec-lbl{font-size:9px;color:var(--text4);letter-spacing:2px;text-transform:uppercase;margin:1.5rem 0 .875rem;display:flex;align-items:center;gap:10px;font-family:'Inter',sans-serif;}
+.sec-lbl::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.05);}
+
+/* ── DET GRID ── */
+.det-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:1.5rem;}
+.det-cell{background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;padding:1rem;backdrop-filter:blur(30px);box-shadow:var(--shadow-glass);transition:all .2s;position:relative;overflow:hidden;}
+.det-cell::before{content:'';position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);}
+.det-cell:hover{background:var(--glass-strong);transform:translateY(-2px);}
+.det-cell .dl{font-size:9px;color:var(--text4);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-family:'Inter',sans-serif;}
+.det-cell .dv{font-family:'Inter',sans-serif;font-size:22px;font-weight:700;color:var(--text);}
+
+/* ── RANKING ── */
+.rank-card{background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;overflow:hidden;backdrop-filter:blur(40px);box-shadow:var(--shadow-glass);}
+.rank-row{display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:1px solid rgba(255,255,255,0.04);transition:background .14s;}
+.rank-row:last-child{border-bottom:none;}
+.rank-row:hover{background:rgba(40,192,215,0.05);}
+.rpos{font-family:'Inter',sans-serif;font-size:11px;color:var(--text4);width:28px;text-align:center;flex-shrink:0;font-weight:600;}
+.rpos.me{color:#28c0d7;} .rpos.g1{color:#ffd700;} .rpos.g2{color:#c0c0c0;} .rpos.g3{color:#cd7f32;}
+.rname{flex:1;font-size:13px;color:var(--text2);}
+.rname.me{color:#28c0d7;font-weight:600;}
+.r-rank{font-size:9px;padding:2px 8px;border-radius:20px;margin-right:6px;white-space:nowrap;font-family:'Inter',sans-serif;border:1px solid;}
+.rpts{font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--text);}
+.rank-footer{padding:11px 18px;font-size:11px;color:var(--text4);text-align:center;border-top:1px solid rgba(255,255,255,0.04);background:rgba(0,0,0,0.15);font-family:'Inter',sans-serif;}
+
+/* RANK COLORS */
+.rk-skilled{background:rgba(56,138,221,0.1);color:#85b7eb;border-color:rgba(56,138,221,0.2);}
+.rk-trusted{background:rgba(250,199,117,0.08);color:#fac775;border-color:rgba(250,199,117,0.2);}
+.rk-trial{background:rgba(99,153,34,0.1);color:#c0dd97;border-color:rgba(99,153,34,0.2);}
+.rk-senior{background:rgba(127,119,221,0.1);color:#afa9ec;border-color:rgba(127,119,221,0.2);}
+.rk-mod{background:rgba(40,192,215,0.1);color:#28c0d7;border-color:rgba(40,192,215,0.2);}
+.rk-trialmod{background:rgba(212,168,67,0.08);color:#d4a843;border-color:rgba(212,168,67,0.2);}
+.rk-support{background:rgba(138,56,221,0.08);color:#c085eb;border-color:rgba(138,56,221,0.2);}
+.rk-default{background:rgba(100,100,100,0.08);color:#888;border-color:rgba(100,100,100,0.2);}
+
+/* ── STATUS BAR ── */
+.status-bar{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text4);margin-top:1.25rem;padding:.75rem 1rem;background:var(--glass);border-radius:10px;border:1px solid var(--glass-border);font-family:'Inter',sans-serif;}
+.dot{width:6px;height:6px;border-radius:50%;background:#28c0d7;animation:pulse 2s infinite;flex-shrink:0;}
+
+/* ── ADMIN TABLE ── */
+.tbl-wrap{overflow-x:auto;border-radius:14px;border:1px solid var(--glass-border);}
+table.u-tbl{width:100%;border-collapse:collapse;font-size:12px;}
+table.u-tbl th{padding:11px 14px;font-size:9px;font-weight:600;color:var(--text4);letter-spacing:1px;text-align:right;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(0,0,0,0.2);font-family:'Inter',sans-serif;text-transform:uppercase;}
+table.u-tbl td{padding:9px 14px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle;}
+table.u-tbl tr:last-child td{border-bottom:none;}
+table.u-tbl tr:hover td{background:rgba(40,192,215,0.03);}
+table.u-tbl tr.grp-head td{background:rgba(0,0,0,0.25);color:var(--text4);font-size:9px;letter-spacing:1.5px;padding:6px 14px;font-family:'Inter',sans-serif;text-transform:uppercase;}
+table.u-tbl input[type=text]{padding:6px 11px;background:rgba(20,24,29,0.8);border:1px solid var(--glass-border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:12px;outline:none;width:160px;transition:border-color .2s;}
+table.u-tbl input[type=text]:focus{border-color:rgba(40,192,215,0.4);}
+
+/* ── GID PANEL ── */
+.gid-panel{background:var(--glass);border:1px solid rgba(40,192,215,0.2);border-radius:16px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;backdrop-filter:blur(30px);}
+.gid-panel h3{font-size:12px;color:#28c0d7;font-weight:600;margin-bottom:.375rem;font-family:'Inter',sans-serif;letter-spacing:.5px;}
+.gid-panel p{font-size:11px;color:var(--text4);margin-bottom:1rem;line-height:1.6;}
+.gid-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.gid-input{padding:8px 14px;background:rgba(20,24,29,0.8);border:1px solid var(--glass-border);border-radius:9px;color:#28c0d7;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;outline:none;width:200px;transition:border-color .2s;letter-spacing:.5px;}
+.gid-input:focus{border-color:rgba(40,192,215,0.4);box-shadow:0 0 0 3px rgba(40,192,215,0.08);}
+.btn-save{padding:8px 22px;background:rgba(40,192,215,0.12);border:1px solid rgba(40,192,215,0.3);border-radius:9px;color:#28c0d7;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-save:hover{background:rgba(40,192,215,0.22);border-color:rgba(40,192,215,0.5);}
+.btn-rand{padding:8px 22px;background:rgba(212,168,67,0.1);border:1px solid rgba(212,168,67,0.3);border-radius:9px;color:#d4a843;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-rand:hover{background:rgba(212,168,67,0.2);}
+.save-ok{font-size:11px;color:#28c0d7;margin-top:.625rem;min-height:14px;font-family:'Inter',sans-serif;}
+.info-note{font-size:11px;color:var(--text4);margin-bottom:.5rem;line-height:1.6;font-family:'Inter',sans-serif;}
+
+/* ── LOADING / ERROR ── */
+.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem;gap:14px;color:var(--text3);}
+.spinner{width:24px;height:24px;border:2px solid rgba(255,255,255,0.07);border-top-color:rgba(40,192,215,0.7);border-radius:50%;animation:sp .8s linear infinite;}
+.err-box{background:rgba(224,80,96,0.08);border:1px solid rgba(224,80,96,0.2);border-radius:12px;padding:1rem 1.25rem;color:#e08088;font-size:13px;margin:1rem 0;line-height:1.6;}
+
+@media(max-width:600px){
+  .kpi-val{font-size:28px;} .det-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .page-body{padding:16px 14px 50px;} header{padding:0 16px;}
+  .hdr-user-name{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="page-login">
+  <div class="login-card">
+    <div class="login-logo"><span class="login-logo-txt">OL</span></div>
+    <div class="login-title"><h1>OUTLAW RP</h1><p>نظام متابعة النقاط</p></div>
+    <div class="field">
+      <label>الاسم</label>
+      <input type="text" id="l-name" placeholder="OL | اسمك" autocomplete="username"/>
+    </div>
+    <div class="field">
+      <label>كلمة المرور</label>
+      <input type="password" id="l-pass" placeholder="••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()"/>
+    </div>
+    <button class="btn-login" id="btn-login" onclick="login()">دخول</button>
+    <p class="err" id="l-err"></p>
+  </div>
+</div>
+
+<!-- ══ STAFF ══ -->
+<div id="page-staff" style="display:none;">
+  <header>
+    <div class="logo">
+      <div class="logo-mark"><span>OL</span></div>
+      <div class="logo-words"><div class="logo-w1">OUTLAW</div><div class="logo-w2">Points System</div></div>
+    </div>
+    <div class="hdr-actions">
+      <span class="hdr-user-name" id="s-name">—</span>
+      <span class="r-rank rk-default" id="s-rank" style="font-size:9px;">—</span>
+      <button class="hdr-btn" id="sync-btn" onclick="syncStaff()">↻ تحديث</button>
+      <button class="hdr-btn danger" onclick="logout()">خروج</button>
+    </div>
+  </header>
+  <div class="page-body" id="staff-body">
+    <div class="loading-wrap"><div class="spinner"></div><p style="font-size:12px;font-family:'Inter',sans-serif;">جاري التحميل...</p></div>
+  </div>
+</div>
+
+<!-- ══ ADMIN ══ -->
+<div id="page-admin" style="display:none;">
+  <header>
+    <div class="logo">
+      <div class="logo-mark"><span>OL</span></div>
+      <div class="logo-words"><div class="logo-w1">OUTLAW</div><div class="logo-w2">Admin Panel</div></div>
+    </div>
+    <div class="hdr-actions">
+      <span class="hdr-badge hb-admin">ADMIN</span>
+      <button class="hdr-btn" id="admin-sync-btn" onclick="adminSync()">↻ تحديث من الشيت</button>
+      <button class="hdr-btn danger" onclick="logout()">خروج</button>
+    </div>
+  </header>
+  <div class="page-body">
+    <div class="gid-panel">
+      <h3>🗂 ربط شيت الشهر الجديد</h3>
+      <p>كل شهر جديد، انسخ الـ GID من رابط الشيت <span style="color:var(--text3);font-family:'Inter',sans-serif;">(gid=XXXXXXXX)</span> ثم اضغط حفظ</p>
+      <div class="gid-row">
+        <input type="text" id="gid-input" class="gid-input" placeholder="43036446"/>
+        <button class="btn-save" onclick="saveGid()">حفظ الشيت</button>
+        <span id="gid-msg" style="font-size:11px;color:#28c0d7;font-family:'Inter',sans-serif;"></span>
+      </div>
+      <p id="gid-current" style="font-size:10px;color:var(--text4);margin-top:.625rem;font-family:'Inter',sans-serif;"></p>
+    </div>
+    <p class="info-note">الأسماء والرتب تُقرأ تلقائياً من Google Sheets</p>
+    <p class="info-note" style="margin-bottom:1.25rem;">إداري جديد ← يظهر تلقائياً · باسورد الجديد الافتراضي: 1234</p>
+    <div class="tbl-wrap">
+      <table class="u-tbl">
+        <thead><tr><th>الاسم</th><th>الرتبة</th><th>كلمة المرور</th></tr></thead>
+        <tbody id="u-body"><tr><td colspan="3" style="text-align:center;color:var(--text4);padding:2rem;font-family:'Inter',sans-serif;">جاري التحميل...</td></tr></tbody>
+      </table>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;margin-top:1.25rem;flex-wrap:wrap;">
+      <button class="btn-save" style="padding:10px 28px;" onclick="savePasswords()">حفظ كلمات المرور</button>
+      <button class="btn-rand" onclick="randomizeAll()">🎲 باسورد عشوائي للكل</button>
+    </div>
+    <p class="save-ok" id="u-save-msg"></p>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════
+   FRONTEND — UI ONLY
+   No passwords, no roles, no API keys, no business logic.
+   All decisions are made by the backend.
+══════════════════════════════════════════════════════ */
+
+const WEEK_LABELS = ["أسبوع 1","أسبوع 2","أسبوع 3","أسبوع 4","أسبوع 5"];
+const RANK_STYLE  = {
+  "Skilled":"rk-skilled","Trusted":"rk-trusted","Trial":"rk-trial",
+  "Senior Mod":"rk-senior","Mod":"rk-mod","Trial Mod":"rk-trialmod","Support":"rk-support",
+};
+
+let myData    = null;  // { name, rank, weekDates, weeks[] }
+let rankData  = null;  // [{ name, rank, total }]
+let curWeek   = 0;
+let curRole   = null;
+let curName   = null;
+
+/* ── API helper ─────────────────────────────────────── */
+async function api(method, path, body) {
+  const opts = {
+    method,
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(path, opts);
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json.error || `HTTP ${res.status}`);
+  return json;
+}
+
+/* ── Auth ───────────────────────────────────────────── */
+async function login() {
+  const name = document.getElementById('l-name').value.trim();
+  const pass = document.getElementById('l-pass').value;
+  const errEl = document.getElementById('l-err');
+  const btn   = document.getElementById('btn-login');
+  errEl.textContent = '';
+  btn.disabled = true;
+  btn.textContent = '...';
+  try {
+    const res = await api('POST', '/login', { name, password: pass });
+    curRole = res.role;
+    curName = res.name;
+    res.role === 'admin' ? showAdmin() : showStaff();
+  } catch (e) {
+    errEl.textContent = e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'دخول';
+  }
+}
+
+async function logout() {
+  await api('POST', '/logout').catch(() => {});
+  curRole = null; curName = null; myData = null; rankData = null;
+  document.getElementById('l-name').value = '';
+  document.getElementById('l-pass').value = '';
+  showPage('page-login');
+}
+
+/* ── Page routing ───────────────────────────────────── */
+function showPage(id) {
+  ['page-login','page-staff','page-admin'].forEach(p => {
+    document.getElementById(p).style.display = p === id ? (p === 'page-login' ? 'flex' : 'block') : 'none';
+  });
+}
+
+/* ── STAFF ──────────────────────────────────────────── */
+async function showStaff() {
+  showPage('page-staff');
+  document.getElementById('s-name').textContent = curName;
+  await syncStaff();
+}
+
+async function syncStaff() {
+  const btn = document.getElementById('sync-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
+  try {
+    [myData, { ranking: rankData }] = await Promise.all([
+      api('GET', '/api/me/data'),
+      api('GET', '/api/ranking'),
+    ]);
+    updateRankBadge();
+    renderStaff();
+  } catch (e) {
+    document.getElementById('staff-body').innerHTML =
+      `<div class="err-box">⚠ تعذر تحميل البيانات<br><small>${e.message}</small></div>`;
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '↻ تحديث'; }
+  }
+}
+
+function updateRankBadge() {
+  if (!myData) return;
+  const el = document.getElementById('s-rank');
+  if (el) { el.textContent = myData.rank || ''; el.className = 'r-rank ' + (RANK_STYLE[myData.rank] || 'rk-default'); }
+}
+
+function renderStaff() {
+  const dates = (myData && myData.weekDates) || WEEK_LABELS.map(()=>'');
+  document.getElementById('staff-body').innerHTML = `
+    <div class="week-tabs" id="s-tabs"></div>
+    <div class="kpi-row">
+      <div class="kpi"><p class="kpi-lbl">نقاط هذا الأسبوع</p><p class="kpi-val accent" id="s-wpts">—</p></div>
+      <div class="kpi"><p class="kpi-lbl">مجموع الشهر</p><p class="kpi-val" id="s-tpts">—</p></div>
+    </div>
+    <p class="sec-lbl">تفاصيل الأسبوع</p>
+    <div class="det-grid">
+      <div class="det-cell"><p class="dl">السحبات</p><p class="dv" id="s-pulls">0</p></div>
+      <div class="det-cell"><p class="dl">البونص</p><p class="dv" id="s-bonus">0</p></div>
+      <div class="det-cell"><p class="dl">التيكيتات</p><p class="dv" id="s-tickets">0</p></div>
+      <div class="det-cell"><p class="dl">Accepted</p><p class="dv" id="s-acc">0</p></div>
+      <div class="det-cell"><p class="dl">Reject</p><p class="dv" id="s-rej">0</p></div>
+      <div class="det-cell"><p class="dl">الريبورت</p><p class="dv" id="s-report">0</p></div>
+    </div>
+    <p class="sec-lbl">الترتيب الشهري</p>
+    <div class="rank-card" id="s-rank-list"></div>
+    <div class="status-bar"><span class="dot"></span><span id="s-sync-lbl">مباشر من الخادم</span></div>`;
+
+  const tabs = document.getElementById('s-tabs');
+  WEEK_LABELS.forEach((lbl, i) => {
+    const b = document.createElement('button');
+    b.className = 'wtab' + (i === curWeek ? ' on' : '');
+    b.textContent = lbl + (dates[i] ? ' · ' + dates[i] : '');
+    b.onclick = () => {
+      curWeek = i;
+      tabs.querySelectorAll('.wtab').forEach((x,j) => x.className = 'wtab' + (j===i?' on':''));
+      updateWeekDisplay();
+    };
+    tabs.appendChild(b);
+  });
+
+  updateWeekDisplay();
+  renderRanking();
+  const sl = document.getElementById('s-sync-lbl');
+  if (sl) sl.textContent = 'آخر تحديث: ' + new Date().toLocaleTimeString('ar-SA');
+}
+
+function getMyWeek(i) {
+  return (myData && myData.weeks && myData.weeks[i]) || {};
+}
+function getMyTotal() {
+  return (myData && myData.weeks || []).reduce((s,w) => s + (w.pts||0), 0);
+}
+function updateWeekDisplay() {
+  const d = getMyWeek(curWeek);
+  document.getElementById('s-wpts').textContent    = d.pts     || 0;
+  document.getElementById('s-tpts').textContent    = getMyTotal();
+  document.getElementById('s-pulls').textContent   = d.pulls   || 0;
+  document.getElementById('s-bonus').textContent   = d.bonus   || 0;
+  document.getElementById('s-tickets').textContent = d.tickets || 0;
+  document.getElementById('s-acc').textContent     = d.acc     || 0;
+  document.getElementById('s-rej').textContent     = d.rej     || 0;
+  document.getElementById('s-report').textContent  = d.report  || 0;
+}
+
+function renderRanking() {
+  if (!rankData) return;
+  const mi = rankData.findIndex(x => x.name === curName);
+  const st = Math.max(0, mi - 2);
+  const sl = rankData.slice(st, Math.min(st + 5, rankData.length));
+  const posClass = p => p===1?'g1':p===2?'g2':p===3?'g3':'';
+  const rkCls = r => RANK_STYLE[r] || 'rk-default';
+  document.getElementById('s-rank-list').innerHTML =
+    sl.map(({name, rank, total}, i) => {
+      const pos = st+i+1, me = name === curName;
+      return `<div class="rank-row">
+        <span class="rpos ${me?'me':posClass(pos)}">#${pos}</span>
+        <span class="rname${me?' me':''}">${name}<span class="r-rank ${rkCls(rank)}">${rank||''}</span></span>
+        <span class="rpts">${total}</span>
+      </div>`;
+    }).join('') +
+    `<div class="rank-footer">ترتيبك: #${mi+1} من ${rankData.length} إداري · مجموعك ${getMyTotal()} نقطة</div>`;
+}
+
+/* ── ADMIN ──────────────────────────────────────────── */
+async function showAdmin() {
+  showPage('page-admin');
+  await loadAdminGid();
+  await loadAdminUsers();
+}
+
+async function adminSync() {
+  const btn = document.getElementById('admin-sync-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
+  try {
+    await api('POST', '/api/admin/sync');
+    await loadAdminUsers();
+    flash('u-save-msg', '✓ تم التحديث من الشيت');
+  } catch (e) {
+    flash('u-save-msg', '⚠ ' + e.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '↻ تحديث من الشيت'; }
+  }
+}
+
+async function loadAdminUsers() {
+  try {
+    const { users } = await api('GET', '/api/admin/users');
+    renderAdminTable(users);
+  } catch (e) {
+    document.getElementById('u-body').innerHTML =
+      `<tr><td colspan="3" style="color:#e08088;padding:1rem;font-family:'Inter',sans-serif;">⚠ ${e.message}</td></tr>`;
+  }
+}
+
+function renderAdminTable(users) {
+  const groups = {};
+  users.forEach(u => { if (!groups[u.rank]) groups[u.rank]=[]; groups[u.rank].push(u); });
+  let html = '';
+  Object.entries(groups).forEach(([rank, members]) => {
+    const rc = RANK_STYLE[rank] || 'rk-default';
+    html += `<tr class="grp-head"><td colspan="3"><span class="r-rank ${rc}" style="font-size:9px;">${rank}</span></td></tr>`;
+    members.forEach(({name}) => {
+      html += `<tr>
+        <td style="color:var(--text2);white-space:nowrap;font-family:'Inter',sans-serif;">${name}</td>
+        <td></td>
+        <td><input type="text" value="••••••••" data-uid="${name}" placeholder="كلمة المرور"></td>
+      </tr>`;
+    });
+  });
+  document.getElementById('u-body').innerHTML = html ||
+    `<tr><td colspan="3" style="text-align:center;color:var(--text4);padding:2rem;font-family:'Inter',sans-serif;">لا توجد بيانات</td></tr>`;
+}
+
+async function savePasswords() {
+  const inputs = [...document.querySelectorAll('#u-body input[data-uid]')];
+  // Only send rows where user typed something (not the placeholder dots)
+  const updates = inputs
+    .filter(inp => inp.value && inp.value !== '••••••••')
+    .map(inp => ({ name: inp.dataset.uid, password: inp.value.trim() }))
+    .filter(u => u.password.length >= 4);
+
+  if (!updates.length) { flash('u-save-msg', '⚠ لا يوجد تغييرات'); return; }
+  try {
+    await api('POST', '/api/admin/password/bulk', { updates });
+    flash('u-save-msg', '✓ تم حفظ كلمات المرور');
+    await loadAdminUsers(); // refresh
+  } catch (e) {
+    flash('u-save-msg', '⚠ ' + e.message);
+  }
+}
+
+function randPwd() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#!';
+  return Array.from({length:8}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+}
+function randomizeAll() {
+  const inputs = document.querySelectorAll('#u-body input[data-uid]');
+  if (!inputs.length) { flash('u-save-msg', '⚠ لا يوجد مستخدمون'); return; }
+  inputs.forEach(inp => { inp.value = randPwd(); });
+  flash('u-save-msg', '🎲 تم التوليد · اضغط حفظ لتثبيتها');
+}
+
+/* ── GID ────────────────────────────────────────────── */
+async function loadAdminGid() {
+  try {
+    const { gid } = await api('GET', '/api/admin/gid');
+    const inp = document.getElementById('gid-input');
+    const cur = document.getElementById('gid-current');
+    if (inp) inp.value = gid;
+    if (cur) cur.textContent = 'الشيت الحالي: gid=' + gid;
+  } catch(e) {}
+}
+
+async function saveGid() {
+  const gid = document.getElementById('gid-input').value.trim();
+  if (!gid) { flash('gid-msg', '⚠ أدخل GID'); return; }
+  try {
+    await api('POST', '/api/admin/gid', { gid });
+    flash('gid-msg', '✓ تم الحفظ والتحديث');
+    const cur = document.getElementById('gid-current');
+    if (cur) cur.textContent = 'الشيت الحالي: gid=' + gid;
+    await loadAdminUsers();
+  } catch (e) {
+    flash('gid-msg', '⚠ ' + e.message);
+  }
+}
+
+/* ── Utils ──────────────────────────────────────────── */
+function flash(id, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  setTimeout(() => el.textContent = '', 3000);
+}
+
+/* ── Auto-restore session on page load ──────────────── */
+(async () => {
+  try {
+    const me = await api('GET', '/api/me');
+    curName = me.name; curRole = me.role;
+    me.role === 'admin' ? showAdmin() : showStaff();
+  } catch {
+    // Not logged in — show login page (already visible by default)
+  }
+})();
+</script>
+</body>
+</html>
