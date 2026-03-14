@@ -179,6 +179,16 @@ table.u-tbl input[type=text]:focus{border-color:rgba(40,192,215,0.4);}
 .spinner{width:24px;height:24px;border:2px solid rgba(255,255,255,0.07);border-top-color:rgba(40,192,215,0.7);border-radius:50%;animation:sp .8s linear infinite;}
 .err-box{background:rgba(224,80,96,0.08);border:1px solid rgba(224,80,96,0.2);border-radius:12px;padding:1rem 1.25rem;color:#e08088;font-size:13px;margin:1rem 0;line-height:1.6;}
 
+/* ── PASSWORD EYE ── */
+.pwd-wrap{position:relative;display:inline-block;}
+.pwd-wrap input{padding-left:30px !important;}
+.pwd-eye{
+  position:absolute;left:8px;top:50%;transform:translateY(-50%);
+  cursor:pointer;font-size:13px;color:var(--text4);
+  transition:color .15s;user-select:none;
+}
+.pwd-eye:hover{color:var(--accent);}
+
 /* ── FOOTER ── */
 .footer{
   position:fixed;bottom:0;left:0;right:0;z-index:200;
@@ -267,10 +277,10 @@ table.u-tbl input[type=text]:focus{border-color:rgba(40,192,215,0.4);}
         <tbody id="u-body"><tr><td colspan="3" style="text-align:center;color:var(--text4);padding:2rem;font-family:'Inter',sans-serif;">جاري التحميل...</td></tr></tbody>
       </table>
     </div>
-    <div style="display:flex;gap:8px;align-items:center;margin-top:1.25rem;flex-wrap:wrap;">
-      <button class="btn-save" style="padding:10px 28px;" onclick="savePasswords()">حفظ كلمات المرور</button>
-      <button class="btn-rand" onclick="randomizeAll()">🎲 باسورد عشوائي للكل</button>
+    <div style="display:flex;gap:8px;align-items:center;margin-top:1.25rem;flex-wrap:wrap;justify-content:flex-end;">
       <button class="btn-rand" id="toggle-vis-btn" style="background:rgba(40,192,215,0.08);border-color:rgba(40,192,215,0.25);color:var(--text3);" onclick="toggleAllPasswords()">👁 إظهار الكل</button>
+      <button class="btn-rand" onclick="randomizeAll()">🎲 باسورد عشوائي للكل</button>
+      <button class="btn-save" style="padding:10px 28px;" onclick="savePasswords()">حفظ كلمات المرور</button>
     </div>
     <p class="save-ok" id="u-save-msg"></p>
   </div>
@@ -508,7 +518,12 @@ function renderAdminTable(users) {
       html += `<tr>
         <td style="color:var(--text2);white-space:nowrap;font-family:'Inter',sans-serif;">${name}</td>
         <td></td>
-        <td><input type="${pwdsVisible?'text':'password'}" value="${pwdVal}" data-uid="${name}" placeholder="كلمة المرور"></td>
+        <td>
+          <div class="pwd-wrap">
+            <input type="password" value="${pwdVal}" data-uid="${name}" placeholder="كلمة المرور">
+            <span class="pwd-eye" onclick="toggleOne(this)" title="إظهار/إخفاء">👁</span>
+          </div>
+        </td>
       </tr>`;
     });
   });
@@ -571,12 +586,26 @@ async function saveGid() {
 }
 
 /* ── Toggle password visibility ─────────────────────── */
+function toggleOne(eyeEl) {
+  const inp = eyeEl.previousElementSibling;
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    eyeEl.textContent = '🙈';
+  } else {
+    inp.type = 'password';
+    eyeEl.textContent = '👁';
+  }
+}
+
 function toggleAllPasswords() {
   pwdsVisible = !pwdsVisible;
   const btn = document.getElementById('toggle-vis-btn');
   if(btn){ btn.textContent = pwdsVisible ? '🙈 إخفاء الكل' : '👁 إظهار الكل'; }
   document.querySelectorAll('#u-body input[data-uid]').forEach(inp => {
     inp.type = pwdsVisible ? 'text' : 'password';
+  });
+  document.querySelectorAll('#u-body .pwd-eye').forEach(eye => {
+    eye.textContent = pwdsVisible ? '🙈' : '👁';
   });
 }
 
