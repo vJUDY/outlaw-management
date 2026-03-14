@@ -116,13 +116,22 @@ header{position:sticky;top:0;z-index:500;height:var(--hdr);display:flex;align-it
 .rank-footer{padding:11px 18px;font-size:11px;color:var(--text4);text-align:center;border-top:1px solid rgba(255,255,255,0.04);background:rgba(0,0,0,0.15);font-family:'Inter',sans-serif;}
 
 /* RANK COLORS */
-.rk-skilled{background:rgba(56,138,221,0.1);color:#85b7eb;border-color:rgba(56,138,221,0.2);}
-.rk-trusted{background:rgba(250,199,117,0.08);color:#fac775;border-color:rgba(250,199,117,0.2);}
-.rk-trial{background:rgba(99,153,34,0.1);color:#c0dd97;border-color:rgba(99,153,34,0.2);}
-.rk-senior{background:rgba(127,119,221,0.1);color:#afa9ec;border-color:rgba(127,119,221,0.2);}
-.rk-mod{background:rgba(40,192,215,0.1);color:#28c0d7;border-color:rgba(40,192,215,0.2);}
-.rk-trialmod{background:rgba(212,168,67,0.08);color:#d4a843;border-color:rgba(212,168,67,0.2);}
-.rk-support{background:rgba(138,56,221,0.08);color:#c085eb;border-color:rgba(138,56,221,0.2);}
+/* Skilled = baby purple بيبي بنفسجي */
+.rk-skilled{background:rgba(200,180,255,0.12);color:#d4bbff;border-color:rgba(200,180,255,0.28);}
+/* Trusted = dark beige بيج غامق */
+.rk-trusted{background:rgba(180,155,110,0.12);color:#c9a96e;border-color:rgba(180,155,110,0.28);}
+/* Trial = dark olive زيتي غامق */
+.rk-trial{background:rgba(90,110,50,0.18);color:#9aad60;border-color:rgba(110,130,55,0.32);}
+/* Senior Mod = grey رصاصي */
+.rk-senior{background:rgba(140,150,160,0.12);color:#b0bcc8;border-color:rgba(140,150,160,0.28);}
+/* Mod = pink وردي */
+.rk-mod{background:rgba(240,100,160,0.1);color:#f585b8;border-color:rgba(240,100,160,0.28);}
+/* Trial Mod = dark navy أزرق كحلي */
+.rk-trialmod{background:rgba(40,70,160,0.18);color:#7090e0;border-color:rgba(40,70,160,0.35);}
+/* Support = yellow أصفر */
+.rk-support{background:rgba(240,210,60,0.1);color:#f0d43a;border-color:rgba(240,210,60,0.28);}
+/* Active = brown بني */
+.rk-active{background:rgba(160,90,40,0.14);color:#c87d45;border-color:rgba(160,90,40,0.3);}
 .rk-default{background:rgba(100,100,100,0.08);color:#888;border-color:rgba(100,100,100,0.2);}
 
 /* ── STATUS BAR ── */
@@ -255,8 +264,14 @@ table.u-tbl input[type=text]:focus{border-color:rgba(40,192,215,0.4);}
 
 const WEEK_LABELS = ["أسبوع 1","أسبوع 2","أسبوع 3","أسبوع 4","أسبوع 5"];
 const RANK_STYLE  = {
-  "Skilled":"rk-skilled","Trusted":"rk-trusted","Trial":"rk-trial",
-  "Senior Mod":"rk-senior","Mod":"rk-mod","Trial Mod":"rk-trialmod","Support":"rk-support",
+  "Skilled":    "rk-skilled",
+  "Trusted":    "rk-trusted",
+  "Trial":      "rk-trial",
+  "Senior Mod": "rk-senior",
+  "Mod":        "rk-mod",
+  "Trial Mod":  "rk-trialmod",
+  "Support":    "rk-support",
+  "Active":     "rk-active",
 };
 
 let myData    = null;  // { name, rank, weekDates, weeks[] }
