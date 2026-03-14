@@ -240,6 +240,7 @@ table.u-tbl input[type=text]:focus{border-color:rgba(40,192,215,0.4);}
     <div style="display:flex;gap:8px;align-items:center;margin-top:1.25rem;flex-wrap:wrap;">
       <button class="btn-save" style="padding:10px 28px;" onclick="savePasswords()">حفظ كلمات المرور</button>
       <button class="btn-rand" onclick="randomizeAll()">🎲 باسورد عشوائي للكل</button>
+      <button class="btn-rand" id="toggle-vis-btn" style="background:rgba(40,192,215,0.08);border-color:rgba(40,192,215,0.25);color:var(--text3);" onclick="toggleAllPasswords()">👁 إظهار الكل</button>
     </div>
     <p class="save-ok" id="u-save-msg"></p>
   </div>
@@ -447,12 +448,17 @@ async function adminSync() {
 async function loadAdminUsers() {
   try {
     const { users } = await api('GET', '/api/admin/users');
+    pwdsVisible = false;
+    const btn = document.getElementById('toggle-vis-btn');
+    if(btn){ btn.textContent = '👁 إظهار الكل'; }
     renderAdminTable(users);
   } catch (e) {
     document.getElementById('u-body').innerHTML =
       `<tr><td colspan="3" style="color:#e08088;padding:1rem;font-family:'Inter',sans-serif;">⚠ ${e.message}</td></tr>`;
   }
 }
+
+let pwdsVisible = false;
 
 function renderAdminTable(users) {
   const groups = {};
@@ -461,11 +467,12 @@ function renderAdminTable(users) {
   Object.entries(groups).forEach(([rank, members]) => {
     const rc = RANK_STYLE[rank] || 'rk-default';
     html += `<tr class="grp-head"><td colspan="3"><span class="r-rank ${rc}" style="font-size:9px;">${rank}</span></td></tr>`;
-    members.forEach(({name}) => {
+    members.forEach(({name, password}) => {
+      const pwdVal = password || '1234';
       html += `<tr>
         <td style="color:var(--text2);white-space:nowrap;font-family:'Inter',sans-serif;">${name}</td>
         <td></td>
-        <td><input type="text" value="••••••••" data-uid="${name}" placeholder="كلمة المرور"></td>
+        <td><input type="${pwdsVisible?'text':'password'}" value="${pwdVal}" data-uid="${name}" placeholder="كلمة المرور"></td>
       </tr>`;
     });
   });
@@ -525,6 +532,16 @@ async function saveGid() {
   } catch (e) {
     flash('gid-msg', '⚠ ' + e.message);
   }
+}
+
+/* ── Toggle password visibility ─────────────────────── */
+function toggleAllPasswords() {
+  pwdsVisible = !pwdsVisible;
+  const btn = document.getElementById('toggle-vis-btn');
+  if(btn){ btn.textContent = pwdsVisible ? '🙈 إخفاء الكل' : '👁 إظهار الكل'; }
+  document.querySelectorAll('#u-body input[data-uid]').forEach(inp => {
+    inp.type = pwdsVisible ? 'text' : 'password';
+  });
 }
 
 /* ── Utils ──────────────────────────────────────────── */
