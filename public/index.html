@@ -271,17 +271,20 @@ table.u-tbl input[type=text]:focus{border-color:rgba(40,192,215,0.4);}
     </div>
     <p class="info-note">الأسماء والرتب تُقرأ تلقائياً من Google Sheets</p>
     <p class="info-note" style="margin-bottom:1.25rem;">إداري جديد ← يظهر تلقائياً · باسورد الجديد الافتراضي: 1234</p>
-    <div class="tbl-wrap">
+    <div style="display:flex;gap:16px;align-items:flex-start;">
+    <div class="tbl-wrap" style="flex:1;">
       <table class="u-tbl">
         <thead><tr><th>الاسم</th><th>الرتبة</th><th>كلمة المرور</th></tr></thead>
         <tbody id="u-body"><tr><td colspan="3" style="text-align:center;color:var(--text4);padding:2rem;font-family:'Inter',sans-serif;">جاري التحميل...</td></tr></tbody>
       </table>
     </div>
-    <div style="display:flex;gap:8px;align-items:center;margin-top:1.25rem;flex-wrap:wrap;">
-      <button class="btn-save" style="padding:10px 28px;" onclick="savePasswords()">حفظ كلمات المرور</button>
-      <button class="btn-rand" onclick="randomizeAll()">🎲 باسورد عشوائي للكل</button>
-      <button class="btn-rand" id="toggle-vis-btn" style="background:rgba(40,192,215,0.08);border-color:rgba(40,192,215,0.25);color:var(--text3);" onclick="toggleAllPasswords()">👁 إظهار الكل</button>
+    <!-- Sidebar buttons -->
+    <div style="display:flex;flex-direction:column;gap:10px;padding-top:48px;min-width:160px;">
+      <button class="btn-save" style="padding:10px 16px;width:100%;" onclick="savePasswords()">💾 حفظ</button>
+      <button class="btn-rand" style="width:100%;" onclick="randomizeAll()">🎲 عشوائي للكل</button>
+      <button class="btn-rand" id="toggle-vis-btn" style="background:rgba(40,192,215,0.08);border-color:rgba(40,192,215,0.25);color:var(--text3);width:100%;" onclick="toggleAllPasswords()">👁 إظهار الكل</button>
     </div>
+    </div><!-- end flex wrapper -->
     <p class="save-ok" id="u-save-msg"></p>
   </div>
 </div>
