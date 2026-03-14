@@ -134,6 +134,21 @@ header{position:sticky;top:0;z-index:500;height:var(--hdr);display:flex;align-it
 .rk-active{background:rgba(160,90,40,0.14);color:#c87d45;border-color:rgba(160,90,40,0.3);}
 .rk-default{background:rgba(100,100,100,0.08);color:#888;border-color:rgba(100,100,100,0.2);}
 
+/* ── SECTION GROUPS ── */
+.sec-group{
+  border:1px solid;border-radius:14px;overflow:hidden;
+  margin-bottom:12px;
+}
+.sec-group-title{
+  font-size:11px;font-weight:700;color:#fff;
+  padding:6px 14px;letter-spacing:1px;
+  font-family:'Inter',sans-serif;text-transform:uppercase;
+}
+.sec-group .det-grid{
+  padding:10px;margin-bottom:0;
+  background:rgba(0,0,0,0.15);
+}
+
 /* ── STATUS BAR ── */
 .status-bar{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text4);margin-top:1.25rem;padding:.75rem 1rem;background:var(--glass);border-radius:10px;border:1px solid var(--glass-border);font-family:'Inter',sans-serif;}
 .dot{width:6px;height:6px;border-radius:50%;background:#28c0d7;animation:pulse 2s infinite;flex-shrink:0;}
@@ -402,13 +417,39 @@ function renderStaff() {
       <div class="kpi"><p class="kpi-lbl">مجموع الشهر</p><p class="kpi-val" id="s-tpts">—</p></div>
     </div>
     <p class="sec-lbl">تفاصيل الأسبوع</p>
-    <div class="det-grid">
-      <div class="det-cell"><p class="dl">السحبات</p><p class="dv" id="s-pulls">0</p></div>
-      <div class="det-cell"><p class="dl">البونص</p><p class="dv" id="s-bonus">0</p></div>
-      <div class="det-cell"><p class="dl">التيكيتات</p><p class="dv" id="s-tickets">0</p></div>
-      <div class="det-cell"><p class="dl">Accepted</p><p class="dv" id="s-acc">0</p></div>
-      <div class="det-cell"><p class="dl">Reject</p><p class="dv" id="s-rej">0</p></div>
-      <div class="det-cell"><p class="dl">الريبورت</p><p class="dv" id="s-report">0</p></div>
+
+    <div class="sec-group" style="border-color:#eaa836;">
+      <div class="sec-group-title" style="background:#eaa836;">قسم الدعم الفني</div>
+      <div class="det-grid">
+        <div class="det-cell" style="border-color:rgba(234,168,54,0.3);"><p class="dl">عدد السحبات</p><p class="dv" id="s-pulls">0</p></div>
+        <div class="det-cell" style="border-color:rgba(234,168,54,0.3);"><p class="dl">البونص</p><p class="dv" id="s-bonus">0</p></div>
+      </div>
+    </div>
+
+    <div class="sec-group" style="border-color:#1f8b4c;">
+      <div class="sec-group-title" style="background:#1f8b4c;">قسم التيكتات</div>
+      <div class="det-grid">
+        <div class="det-cell" style="border-color:rgba(31,139,76,0.3);"><p class="dl">عدد التيكتات</p><p class="dv" id="s-tickets">0</p></div>
+      </div>
+    </div>
+
+    <div class="sec-group" style="border-color:#546e7a;">
+      <div class="sec-group-title" style="background:#546e7a;">قسم التفعيل</div>
+      <div class="det-grid">
+        <div class="det-cell" style="border-color:rgba(84,110,122,0.3);"><p class="dl">أيام الحضور</p><p class="dv" id="s-days">0</p></div>
+        <div class="det-cell" style="border-color:rgba(84,110,122,0.3);"><p class="dl">غياب بعذر</p><p class="dv" id="s-excused">0</p></div>
+        <div class="det-cell" style="border-color:rgba(84,110,122,0.3);"><p class="dl">غياب بدون عذر</p><p class="dv" id="s-absent">0</p></div>
+        <div class="det-cell" style="border-color:rgba(84,110,122,0.3);"><p class="dl">Accepted</p><p class="dv" id="s-acc">0</p></div>
+        <div class="det-cell" style="border-color:rgba(84,110,122,0.3);"><p class="dl">Reject</p><p class="dv" id="s-rej">0</p></div>
+      </div>
+    </div>
+
+    <div class="sec-group" style="border-color:#1c659e;">
+      <div class="sec-group-title" style="background:#1c659e;">قسم الريبورت</div>
+      <div class="det-grid">
+        <div class="det-cell" style="border-color:rgba(28,101,158,0.3);"><p class="dl">الريبورت</p><p class="dv" id="s-report">0</p></div>
+        <div class="det-cell" style="border-color:rgba(28,101,158,0.3);"><p class="dl">الإستدعاء الدوري</p><p class="dv" id="s-summons">0</p></div>
+      </div>
     </div>
     <p class="sec-lbl">الترتيب الشهري</p>
     <div class="rank-card" id="s-rank-list"></div>
